@@ -9,6 +9,8 @@ sudo yum install java-11-amazon-corretto-headless
 java --version
 ```
 
+---
+
 # [Zookeeper](https://zookeeper.apache.org/)
 
 ## Install Zookeeper
@@ -97,6 +99,48 @@ server.3=0.0.0.0:2888:3888
 ```bash
 ~/zookeeper/apache-zookeeper-3.7.1-bin/bin/zkServer.sh --config ~/zookeeper/conf stop
 ```
+
+## Kafka metadata in Zookeeper
+
+```bash
+~/zookeeper/apache-zookeeper-3.7.1-bin/bin/zkCli.sh
+```
+
+카프카와 관련된 메타데이터
+
+```bash
+[zk: localhost:2181(CONNECTED) 0] ls /kafka-test
+[admin, brokers, cluster, config, consumers, controller, controller_epoch, feature, isr_change_notification, latest_producer_id_block, log_dir_event_notification]
+```
+
+브로커 정보 확인
+- 통신 보안 규칙
+- jmx port 상태
+- host 정보 
+
+```bash
+[zk: localhost:2181(CONNECTED) 1] get /kafka-test/brokers/ids/1
+{"listener_security_protocol_map":{"PLAINTEXT":"PLAINTEXT"},"endpoints":["PLAINTEXT://public.kafka.server.ip:9092"],"jmx_port":-1,"features":{},"host":"public.kafka.server.ip","timestamp":"1676813353851","port":9092,"version":5}
+```
+
+브로커중 컨트롤러에 대한 데이터
+
+```bash
+[zk: localhost:2181(CONNECTED) 2] get /kafka-test/controller
+{"version":2,"brokerid":2,"timestamp":"1676813353461","kraftControllerEpoch":-1}
+```
+
+카프카에 저장된 토픽
+
+```bash
+[zk: localhost:2181(CONNECTED) 3] ls /kafka-test/brokers/topics
+[__consumer_offsets, hello.kafka, hello.kafka2, verify-test]
+
+[zk: localhost:2181(CONNECTED) 4] get /kafka-test/brokers/topics/hello.kafka
+{"removing_replicas":{},"partitions":{"2":[2],"1":[1],"0":[3],"3":[3]},"topic_id":"qCqvWVu9Q6OJ_udtfKYegA","adding_replicas":{},"version":3}
+```
+
+---
 
 # [Kafka](https://kafka.apache.org/)
 
@@ -258,4 +302,74 @@ public.ip.kafka.03 kafka3
 
 ```bash
 ~/kafka/kafka_2.12-3.4.0/bin/kafka-broker-api-versions.sh --bootstrap-server kafka1:9092,kafka2:9092,kafka3:9092
+```
+
+## Kafka log dir
+
+브로커에 저장된 파일 시스템  
+- config/server.propertie에 log.dir 옵션 설정 디렉토리  
+- 토픽 이름과 파티션 번호의 조합으로 하위 디렉토리를 생성하여 데이터를 저장  
+
+```text
+Topic: hello.kafka	TopicId: qCqvWVu9Q6OJ_udtfKYegA	PartitionCount: 4	ReplicationFactor: 1	Configs: retention.ms=86400000
+	Topic: hello.kafka	Partition: 0	Leader: 3	Replicas: 3	Isr: 3
+	Topic: hello.kafka	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: hello.kafka	Partition: 2	Leader: 2	Replicas: 2	Isr: 2
+	Topic: hello.kafka	Partition: 3	Leader: 3	Replicas: 3	Isr: 3
+```
+
+```bash
+[ec2-user@ip-192-168-0-213 kafka-logs]$ ls ~/kafka/kafka-logs/
+__consumer_offsets-11  __consumer_offsets-44
+__consumer_offsets-14  __consumer_offsets-47
+__consumer_offsets-17  __consumer_offsets-5
+__consumer_offsets-2   __consumer_offsets-8
+__consumer_offsets-20  cleaner-offset-checkpoint
+__consumer_offsets-23  hello.kafka-1
+__consumer_offsets-26  hello.kafka2-1
+__consumer_offsets-29  log-start-offset-checkpoint
+__consumer_offsets-32  meta.properties
+__consumer_offsets-35  recovery-point-offset-checkpoint
+__consumer_offsets-38  replication-offset-checkpoint
+__consumer_offsets-41
+[ec2-user@ip-192-168-0-164 kafka-logs]$ ls ~/kafka/kafka-logs/
+__consumer_offsets-0   __consumer_offsets-45
+__consumer_offsets-12  __consumer_offsets-48
+__consumer_offsets-15  __consumer_offsets-6
+__consumer_offsets-18  __consumer_offsets-9
+__consumer_offsets-21  cleaner-offset-checkpoint
+__consumer_offsets-24  hello.kafka-2
+__consumer_offsets-27  hello.kafka2-2
+__consumer_offsets-3   log-start-offset-checkpoint
+__consumer_offsets-30  meta.properties
+__consumer_offsets-33  recovery-point-offset-checkpoint
+__consumer_offsets-36  replication-offset-checkpoint
+__consumer_offsets-39  verify-test-0
+__consumer_offsets-42
+[ec2-user@ip-192-168-0-83 kafka-logs]$ ls ~/kafka/kafka-logs/
+__consumer_offsets-1   __consumer_offsets-43
+__consumer_offsets-10  __consumer_offsets-46
+__consumer_offsets-13  __consumer_offsets-49
+__consumer_offsets-16  __consumer_offsets-7
+__consumer_offsets-19  cleaner-offset-checkpoint
+__consumer_offsets-22  hello.kafka-0
+__consumer_offsets-25  hello.kafka-3
+__consumer_offsets-28  hello.kafka2-0
+__consumer_offsets-31  log-start-offset-checkpoint
+__consumer_offsets-34  meta.properties
+__consumer_offsets-37  recovery-point-offset-checkpoint
+__consumer_offsets-4   replication-offset-checkpoint
+__consumer_offsets-40
+```
+
+hello.kafka 토픽의 1번 파티션에 존재하는 데이터 확인
+- 메세지와 메타데이터를 저장
+- index: 메세지의 오프셋을 인덱싱한 정보를 담은 파일
+- timeindex: 메세지에 포함된 timestamp값을 기준으로 인덱싱한 정보
+  - 메세지에는 timestamp 값이 포함된다
+  - timestamp 값은 브로커가 적재한 데이터를 삭제하거나 압축하는데 사용
+
+```bash
+[ec2-user@ip-192-168-0-213 hello.kafka-1]$ ls ~/kafka/kafka-logs/hello.kafka-1/
+00000000000000000000.index  00000000000000000000.log  00000000000000000000.timeindex  leader-epoch-checkpoint  partition.metadata
 ```
