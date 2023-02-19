@@ -1,6 +1,11 @@
 
 # kafka-delete-records.sh
 
+[A Short Guide to Removing Messages from a Kafka Topic](https://www.oak-tree.tech/blog/kafka-admin-remove-messages)
+
+> 삭제 할 시간에 reset-offsets 방식이 더 안전할 수 있음  
+> [kafka-consumer-groups 명령어 --reset-offsets 옵션을 확인할것](./kafka-consumer-groups.md)
+
 가장 오래된 데이터(가장 낮은 숫자의 오프셋)부터 특정 시점의 오프셋까지 삭제
 
 test 토픽의 0번 파티션에 0부터 100까지 데이터가 들어있을때  
