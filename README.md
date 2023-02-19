@@ -90,7 +90,7 @@ server.3=0.0.0.0:2888:3888
 ~/zookeeper/apache-zookeeper-3.7.1-bin/bin/zkServer.sh --config ~/zookeeper/conf status
 ```
 
-![zookeeper server status](./img/zkServer-status.png)
+![zookeeper server status](./readme/img/zkServer-status.png)
 
 ## Command ETC
 
@@ -245,3 +245,17 @@ netstat -ntlp | grep 9092
 ~/kafka/kafka_2.12-3.4.0/bin/kafka-server-stop.sh
 ```
 
+## Connection test
+
+hosts 설정
+```bash
+sudo vim /etc/hosts
+
+public.ip.kafka.01 kafka1
+public.ip.kafka.02 kafka2
+public.ip.kafka.03 kafka3
+```
+
+```bash
+~/kafka/kafka_2.12-3.4.0/bin/kafka-broker-api-versions.sh --bootstrap-server kafka1:9092,kafka2:9092,kafka3:9092
+```
