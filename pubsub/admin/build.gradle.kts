@@ -2,7 +2,7 @@ plugins {
     java
 }
 
-group = "me.zeroest.kafka.consumer"
+group = "me.zeroest.kafka.admin"
 version = "0.0.0"
 
 repositories {
