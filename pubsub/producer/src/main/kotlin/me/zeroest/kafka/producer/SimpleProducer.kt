@@ -25,7 +25,7 @@ fun main() {
      * 1: 리더 파티션에 데이터가 저장되면 전송 성공으로 판단
      * -1, all: min.insync.replicas 개수에 해당하는 리더 파티션과 팔로워 파티션에 데이터가 저장되면 성공으로 판단
      * */
-    configs[ProducerConfig.ACKS_CONFIG] = 1 // default
+    configs[ProducerConfig.ACKS_CONFIG] = "1" // default
     /**
      * @see org.apache.kafka.clients.producer.ProducerConfig.BUFFER_MEMORY_DOC
      * 브로커로 전송할 데이터를 배치로 모으기 위해 설정할 버퍼 메모리 사이즈
@@ -51,7 +51,7 @@ fun main() {
      * 프로듀서의 고유한 트랜잭션 아이디를 설정할 수 있다
      * 이 값을 설정하면 트랜잭션 프로듀서로 동작한다
      */
-    configs[ProducerConfig.TRANSACTIONAL_ID_CONFIG] = null // default
+//    configs[ProducerConfig.TRANSACTIONAL_ID_CONFIG] = null // default
 
     val producer = KafkaProducer<String, String>(configs)
 
