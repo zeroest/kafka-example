@@ -1,0 +1,35 @@
+
+spring:
+  kafka:
+    consumer:
+      # 필수 옵션 없을경우 localhost:9092 자동설정
+      bootstrap-servers: kafka1:9092,kafka2:9092,kafka3:9092
+      # 필수 옵션 없을경우 StringSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 필수 옵션 없을경우 StringSerializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+#      client-id:
+#      auto-commit-interval:
+#      auto-offset-reset:
+#      enable-auto-commit:
+#      fetch-max-wait:
+#      fetch-min-size:
+#      group-id:
+#      heartbeat-interval:
+#      max-poll-records:
+#      properties:
+
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      type: BATCH
+
+#      ack-count:
+#      ack-time:
+#      client-id:
+#      concurrency:
+#      idle-event-interval:
+#      log-container-config:
+#      monitor-interval:
+#      no-poll-threshold:
+#      poll-timeout:
