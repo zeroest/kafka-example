@@ -1,0 +1,19 @@
+
+spring:
+  kafka:
+    producer:
+      # 필수 옵션 없을경우 localhost:9092 자동설정
+      bootstrap-servers: kafka1:9092,kafka2:9092,kafka3:9092
+      # 필수 옵션 없을경우 StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 필수 옵션 없을경우 StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+      acks: all
+#      batch-size:
+#      buffer-memory:
+#      client-id:
+#      compression-type:
+#      properties:
+#      retries:
+#      transaction-id-prefix:
