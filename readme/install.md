@@ -373,3 +373,34 @@ hello.kafka 토픽의 1번 파티션에 존재하는 데이터 확인
 [ec2-user@ip-192-168-0-213 hello.kafka-1]$ ls ~/kafka/kafka-logs/hello.kafka-1/
 00000000000000000000.index  00000000000000000000.log  00000000000000000000.timeindex  leader-epoch-checkpoint  partition.metadata
 ```
+
+## Configuring min.insync.replicas at Kafka broker level
+[Reference](https://www.conduktor.io/kafka/kafka-topic-configuration-min-insync-replicas/#Configuring-min.insync.replicas-at-Kafka-broker-level-3)
+
+브로커 서버 설정 변경
+- default value: 1
+- open broker configuration file `config/server.properties`
+- append config following at the end of the file
+
+```properties
+min.insync.replicas=2
+```
+
+kafka-configs CLI 를 통한 설정 변경
+```bash
+# add config
+kafka-configs.sh \
+--bootstrap-server kafka1:9092 \
+--alter \
+--entity-type brokers \
+--entity-default \
+--add-config min.insync.replicas=2
+
+# delete config
+kafka-configs.sh \
+--bootstrap-server kafka1:9092 \
+--alter \
+--entity-type brokers \
+--entity-default \
+--delete-config min.insync.replicas
+```

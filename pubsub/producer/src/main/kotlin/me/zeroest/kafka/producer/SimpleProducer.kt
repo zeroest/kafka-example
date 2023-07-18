@@ -24,6 +24,11 @@ fun main() {
      * 0: 프로듀서가 전송한 즉시 브로커에 데이터 저장 여부와 상관 없이 성공으로 판단
      * 1: 리더 파티션에 데이터가 저장되면 전송 성공으로 판단
      * -1, all: min.insync.replicas 개수에 해당하는 리더 파티션과 팔로워 파티션에 데이터가 저장되면 성공으로 판단
+     *
+     * <a href="https://www.conduktor.io/kafka/kafka-topic-configuration-min-insync-replicas/#Kafka-producers-acks-setting-0">Reference</a>
+     * The default value of acks has changed with Kafka v3.0:
+     * - if using Kafka < v3.0, acks=1
+     * - if using Kafka >= v3.0, acks=all
      * */
     configs[ProducerConfig.ACKS_CONFIG] = "1" // default
     /**

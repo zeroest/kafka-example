@@ -74,3 +74,29 @@ Topic: hello.kafka2	TopicId: mRRJI0iBQy2ugMPLwYpurQ	PartitionCount: 3	Replicatio
 Dynamic configs for topic hello.kafka are:
   retention.ms=86400000 sensitive=false synonyms={DYNAMIC_TOPIC_CONFIG:retention.ms=86400000}
 ```
+
+### min.insync.replicas
+[Reference - Kafka topic configuration min.insync.replicas](https://www.conduktor.io/kafka/kafka-topic-configuration-min-insync-replicas/)
+
+```bash
+# add min.isr config 
+kafka-configs.sh \
+--bootstrap-server kafka1:9092 \
+--alter \
+--entity-type topics \
+--entity-name configured-topic \
+--add-config min.insync.replicas=2
+
+# delete min.isr config
+kafka-configs.sh \
+--bootstrap-server kafka1:9092 \
+--alter \
+--entity-type topics \
+--entity-name configured-topic \
+--delete-config min.insync.replicas
+
+kafka-topics.sh \
+--bootstrap-server kafka1:9092 \
+--describe \
+--topic configured-topic
+```
