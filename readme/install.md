@@ -1,4 +1,16 @@
 
+# Kafka on docker
+
+[Kafka cluster mode](./docker/kafka-cluster-docker-compose.yaml)
+
+[Kafka full stack mode](./docker/kafka-full-stack-docker-compose.yaml)
+
+## Reference
+
+[[devson119] Docker Compose를 사용하여 Kafka 셋업하기](https://devs0n.tistory.com/67)
+
+[[conduktor] kafka-stack-docker-compose](https://github.com/conduktor/kafka-stack-docker-compose)
+
 # Kafka on premise
 
 ## Install Java
